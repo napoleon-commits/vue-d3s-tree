@@ -15,6 +15,7 @@
 
 <script>
 import { tree } from 'vued3tree';
+import ServiceBrances from '@/static/ServiceBranches';
 
 export default {
   components: {
@@ -25,14 +26,35 @@ export default {
   data() {
     return {
       tree: {
-        name: "father",
-        children:[{
-          name: "son1",
-          children:[ {name: "grandson"}, {name: "grandson2"}]
-        },{
-          name: "son2",
-          children:[ {name: "grandson3"}, {name: "grandson4"}]
-        }]
+        name: ServiceBrances[Math.floor(Math.random()*ServiceBrances.length)],
+        children:(()=>{
+          const numberOfChildren = Math.floor(Math.random() * 5) + 1;
+          const children = [];
+          for(let i = 0; i < numberOfChildren; i+=1){
+            children.push({name: ServiceBrances[Math.floor(Math.random()*ServiceBrances.length)]})
+          }
+          for(let i = 0; i < children.length; i+=1){
+            const child = children[i];
+            const grandChildren = [];
+            const numberOfGrandChildren = Math.floor(Math.random() * 5) + 1;
+            for(let j = 0; j < numberOfGrandChildren; j+=1){
+              grandChildren.push({name: ServiceBrances[Math.floor(Math.random()*ServiceBrances.length)]})
+            }
+            child.children = grandChildren;
+          }
+          for(let i = 0; i < children.length; i+=1){
+            for(let j = 0; j < children[i].children.length; j+=1){
+              const grandChild = children[i].children[j];
+              const numberOfGreatGrandChildren = Math.floor(Math.random() * 5) + 1;
+              const greatGrandChildren = [];
+              for(let k = 0; k < numberOfGreatGrandChildren; k+=1){
+                greatGrandChildren.push({name: ServiceBrances[Math.floor(Math.random()*ServiceBrances.length)]})
+              }
+              grandChild.children = greatGrandChildren;
+            }
+          }
+          return children;
+        })()
       },
     };
   },

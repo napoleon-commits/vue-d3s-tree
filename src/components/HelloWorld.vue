@@ -1,11 +1,16 @@
 <template>
-  <tree
-    :data="tree"
-    node-text="name"
-    layoutType="horizontal"
-    class="tidytree"
-  >
-  </tree>
+  <div>
+    <tree
+      :data="tree"
+      node-text="name"
+      layoutType="horizontal"
+      class="tidytree"
+    >
+    </tree>
+    <component :is="'style'" type="text/css">
+      {{cssStyle}}
+    </component>
+  </div>
 </template>
 
 <script>
@@ -29,6 +34,18 @@ export default {
       },
     };
   },
+  computed: {
+    cssStyle() {
+      return `
+        .linktree {
+          stroke: red !important;
+        }
+        #app > div > div > svg > g > path:nth-child(1) {
+          stroke: grey !important;
+        }
+      `;
+    }
+  }
 }
 </script>
 
@@ -37,8 +54,5 @@ export default {
     height: 80vh;
     width: 80vw;
     margin: auto;
-  }
-  .linktree {
-    stroke: red !important;
   }
 </style>

@@ -20,6 +20,8 @@ export default {
   components: {
     tree
   },
+  // <g> tag: level order traversal traversing right node, then left node
+  // <path> tag: level order but starting at the leaf and leftmost
   data() {
     return {
       tree: {

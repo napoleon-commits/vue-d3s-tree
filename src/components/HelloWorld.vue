@@ -16,6 +16,7 @@
 <script>
 import { tree } from 'vued3tree';
 import ServiceBrances from '@/static/ServiceBranches';
+import LevelTraverseTree from '@/utils/LevelTraverseTree';
 
 export default {
   components: {
@@ -69,7 +70,10 @@ export default {
         }
       `;
     }
-  }
+  },
+  mounted() {
+    console.log(LevelTraverseTree(this.tree));
+  },
 }
 </script>
 

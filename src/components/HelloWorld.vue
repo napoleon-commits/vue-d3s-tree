@@ -36,7 +36,7 @@ export default {
           for(let i = 0; i < children.length; i+=1){
             const child = children[i];
             const grandChildren = [];
-            const numberOfGrandChildren = Math.floor(Math.random() * 5) + 1;
+            const numberOfGrandChildren = Math.floor(Math.random() * 5);
             for(let j = 0; j < numberOfGrandChildren; j+=1){
               grandChildren.push({name: ServiceBrances[Math.floor(Math.random()*ServiceBrances.length)]})
             }
@@ -45,7 +45,7 @@ export default {
           for(let i = 0; i < children.length; i+=1){
             for(let j = 0; j < children[i].children.length; j+=1){
               const grandChild = children[i].children[j];
-              const numberOfGreatGrandChildren = Math.floor(Math.random() * 5) + 1;
+              const numberOfGreatGrandChildren = Math.floor(Math.random() * 5);
               const greatGrandChildren = [];
               for(let k = 0; k < numberOfGreatGrandChildren; k+=1){
                 greatGrandChildren.push({name: ServiceBrances[Math.floor(Math.random()*ServiceBrances.length)]})

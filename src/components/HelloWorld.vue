@@ -65,14 +65,26 @@ export default {
         .linktree {
           stroke: red !important;
         }
-        #app > div > div > svg > g > path:nth-child(1) {
-          stroke: grey !important;
-        }
+        ${(()=>{
+          let levelOrderTree = LevelTraverseTree(this.tree);
+          // remove the head of the tree
+          levelOrderTree.shift();
+          // reverse the tree
+          levelOrderTree = levelOrderTree.reverse();
+          let grayCss = '';
+          for(let i = 0; i < levelOrderTree.length; i+=1){
+            if(this.$store.state.checkedServices.includes(levelOrderTree[i]) === false){
+              grayCss += `
+                #app > div > div > svg > g > path:nth-child(${i+1}) {
+                  stroke: grey !important;
+                }
+              `;
+            }
+          }
+          return grayCss;
+        })()}
       `;
     }
-  },
-  mounted() {
-    console.log(LevelTraverseTree(this.tree));
   },
 }
 </script>

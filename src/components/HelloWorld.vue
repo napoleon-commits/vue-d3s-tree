@@ -5,6 +5,7 @@
       node-text="name"
       layoutType="horizontal"
       class="tidytree"
+      id="my-custom-tree"
     >
     </tree>
     <component :is="'style'" type="text/css">
@@ -75,7 +76,7 @@ export default {
           for(let i = 0; i < levelOrderTree.length; i+=1){
             if(this.$store.state.checkedServices.includes(levelOrderTree[i]) === false){
               grayCss += `
-                #app > div > div > svg > g > path:nth-child(${i+1}) {
+                #my-custom-tree > svg > g > path:nth-child(${i+1}) {
                   stroke: grey !important;
                 }
               `;

@@ -42,6 +42,7 @@ export default {
           tempServiceBranchArray.push(service);
         }
         this.$store.state.checkedServices = tempServiceBranchArray;
+        this.$root.$emit("setNodeTreeCss");
       },
     },
 }

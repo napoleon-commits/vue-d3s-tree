@@ -6,6 +6,9 @@
       layoutType="horizontal"
       class="tidytree"
       id="my-custom-tree"
+      ref="my-custom-tree"
+      @expand="onExpand"
+      @retract="onRetract"
     >
     </tree>
     <component :is="'style'" type="text/css">
@@ -17,7 +20,6 @@
 <script>
 import { tree } from 'vued3tree';
 import ServiceBrances from '@/static/ServiceBranches';
-import LevelTraverseTree from '@/utils/LevelTraverseTree';
 
 export default {
   components: {
@@ -58,23 +60,84 @@ export default {
           return children;
         })()
       },
+      cssStyle: '',
     };
   },
-  computed: {
-    cssStyle() {
-      return `
+  mounted(){
+    this.$root.$on("setNodeTreeCss", this.setNodeTreeCss);
+    window.requestAnimationFrame(() => {
+      const nodesToCollapse = this.getNodesAtLevel(2);
+      nodesToCollapse.forEach(node => {
+        this.$refs['my-custom-tree'].collapseAll(node)
+      });
+      this.setNodeTreeCss();
+    });
+  },
+  methods: {
+    getNodesAtLevel(level){
+      const nodesAtLevel = [];
+      if(level <= (this.$refs['my-custom-tree'].internaldata.root.height + 1)){
+        let doneTraversing = false;
+        const queue = [];
+        queue.push(this.$refs['my-custom-tree'].internaldata.root);
+        while(queue.length > 0 && doneTraversing === false){
+          const lengthOfQueue = queue.length;
+          if((queue[0].depth + 1) > level){
+            doneTraversing = true;
+          }
+          else {
+            for(let i = 0; i < lengthOfQueue; i+=1)
+            {
+              const poppedNode = queue.shift();
+              if((poppedNode.depth + 1) === level){
+                nodesAtLevel.push(poppedNode)
+              }
+              if(poppedNode.children){
+                poppedNode.children.forEach(node => {
+                  queue.push(node)
+                });
+              }
+            }
+          }
+        }
+      }
+      return nodesAtLevel;
+    },
+    getLevelOrderTraverseOfVisibleNodes(){
+      const levelOrderArray = [];
+      if(this.$refs['my-custom-tree'] && this.$refs['my-custom-tree'].internaldata){
+        const queue = [];
+        queue.push(this.$refs['my-custom-tree'].internaldata.root);
+        while(queue.length > 0){
+          const lengthOfQueue = queue.length;
+          for(let i = 0; i < lengthOfQueue; i+=1)
+          {
+            const poppedNode = queue.shift();
+            levelOrderArray.push(poppedNode);
+            if(poppedNode.children){
+              poppedNode.children.forEach(node => {
+                queue.push(node)
+              });
+            }
+          }
+        }
+      }
+      return levelOrderArray;
+    },
+    setNodeTreeCss(){
+      this.cssStyle = `
         .linktree {
           stroke: red !important;
         }
         ${(()=>{
-          let levelOrderTree = LevelTraverseTree(this.tree);
+          let levelOrderTree = this.getLevelOrderTraverseOfVisibleNodes();
           // remove the head of the tree
           levelOrderTree.shift();
           // reverse the tree
           levelOrderTree = levelOrderTree.reverse();
           let grayCss = '';
           for(let i = 0; i < levelOrderTree.length; i+=1){
-            if(this.$store.state.checkedServices.includes(levelOrderTree[i]) === false){
+            if(this.$store.state.checkedServices.includes(levelOrderTree[i].data.name) === false){
               grayCss += `
                 #my-custom-tree > svg > g > path:nth-child(${i+1}) {
                   stroke: grey !important;
@@ -84,7 +147,13 @@ export default {
           }
           return grayCss;
         })()}
-      `;
+      `
+    },
+    onExpand(){
+      this.setNodeTreeCss();
+    },
+    onRetract(){
+      this.setNodeTreeCss();
     }
   },
 }

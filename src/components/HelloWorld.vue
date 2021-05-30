@@ -39,28 +39,13 @@ export default {
       cssStyle: '',
     };
   },
-  computed: {
-    // ${this.getGrayedOutCss()}
-    // cssStyle() {
-    //   return `
-    //     .linktree {
-    //       stroke: red !important;
-    //     }
-    //   `;
-    // }
-  },
   methods: {
     getGrayedOutCss(){
-      let levelOrderTree = LevelTraverseTree(this.tree);
-      // remove the head of the tree
-      levelOrderTree.shift();
-      // reverse the tree
-      levelOrderTree = levelOrderTree.reverse();
       let grayCss = '';
-      for(let i = 0; i < levelOrderTree.length; i+=1){
-        if(this.$store.state.checkedServices.includes(levelOrderTree[i]) === false){
+      for(let i = this.visibleNodesArray.length - 1; i > 0; i-=1){
+        if(this.$store.state.checkedServices.includes(this.visibleNodesArray[i].data.name) === false){
           grayCss += `
-            #my-custom-tree > svg > g > path:nth-child(${i+1}) {
+            #my-custom-tree > svg > g > path:nth-child(${(this.visibleNodesArray.length - i - 1)+1}) {
               stroke: grey !important;
             }
           `;
@@ -85,6 +70,7 @@ export default {
         .linktree {
           stroke: red !important;
         }
+        ${this.getGrayedOutCss()}
       `;
     }
   },

@@ -36,17 +36,18 @@ export default {
         children: generateChildren(),
       },
       visibleNodesArray: [],
+      cssStyle: '',
     };
   },
   computed: {
     // ${this.getGrayedOutCss()}
-    cssStyle() {
-      return `
-        .linktree {
-          stroke: red !important;
-        }
-      `;
-    }
+    // cssStyle() {
+    //   return `
+    //     .linktree {
+    //       stroke: red !important;
+    //     }
+    //   `;
+    // }
   },
   methods: {
     getGrayedOutCss(){
@@ -70,6 +71,7 @@ export default {
     onClickedNode(){
       console.log('UPDATE VISIBLE NODES FROM onClickedNode');
       this.setVisibleNodesArray();
+      this.setCssStyle();
     },
     setVisibleNodesArray(){
       // wait for animation to finish
@@ -77,11 +79,20 @@ export default {
         this.visibleNodesArray = levelOrderVisibleNodes(this.$refs);
         console.log(this.visibleNodesArray);
       });
+    },
+    setCssStyle(){
+      this.cssStyle = `
+        .linktree {
+          stroke: red !important;
+        }
+      `;
     }
   },
   mounted(){
     this.$root.$on("setVisibleNodesArray", this.setVisibleNodesArray);
+    this.$root.$on("setCssStyle", this.setCssStyle);
     this.setVisibleNodesArray();
+    this.setCssStyle();
   }
 }
 </script>

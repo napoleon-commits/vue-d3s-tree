@@ -43,8 +43,7 @@ export default {
         }
         this.$store.state.checkedServices = tempServiceBranchArray;
         console.log("UPDATE VISIBLE NODES FROM Selector.vue")
-        this.$root.$emit("setVisibleNodesArray");
-        this.$root.$emit("setCssStyle");
+        this.$root.$emit("updateUI");
       },
     },
 }

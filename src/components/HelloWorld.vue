@@ -6,8 +6,9 @@
       layoutType="horizontal"
       class="tidytree"
       id="my-custom-tree"
-      @clickedNode="onClickedNode"
       ref="my-custom-tree"
+      @expand="onExpand"
+      @retract="onRetract"
     >
     </tree>
     <component :is="'style'" type="text/css">
@@ -52,17 +53,15 @@ export default {
       }
       return grayCss;
     },
-    onClickedNode(){
-      console.log('UPDATE VISIBLE NODES FROM onClickedNode');
-      this.setVisibleNodesArray();
-      this.setCssStyle();
+    onExpand(){
+      this.updateUI();
+    },
+    onRetract(){
+      this.updateUI();
     },
     setVisibleNodesArray(){
-      // wait for animation to finish
-      window.requestAnimationFrame(() => {
-        this.visibleNodesArray = levelOrderVisibleNodes(this.$refs);
-        console.log(this.visibleNodesArray);
-      });
+      this.visibleNodesArray = levelOrderVisibleNodes(this.$refs);
+      console.log(this.visibleNodesArray);
     },
     setCssStyle(){
       this.cssStyle = `
@@ -71,13 +70,18 @@ export default {
         }
         ${this.getGrayedOutCss()}
       `;
+    },
+    updateUI(){
+      // wait for animation to finish
+      window.requestAnimationFrame(() => {
+        this.setVisibleNodesArray();
+        this.setCssStyle();
+      });
     }
   },
   mounted(){
-    this.$root.$on("setVisibleNodesArray", this.setVisibleNodesArray);
-    this.$root.$on("setCssStyle", this.setCssStyle);
-    this.setVisibleNodesArray();
-    this.setCssStyle();
+    this.$root.$on("updateUI", this.updateUI);
+    this.updateUI();
   }
 }
 </script>

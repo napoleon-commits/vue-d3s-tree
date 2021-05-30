@@ -7,6 +7,7 @@
       class="tidytree"
       id="my-custom-tree"
       @clickedNode="onClickedNode"
+      ref="my-custom-tree"
     >
     </tree>
     <component :is="'style'" type="text/css">
@@ -20,6 +21,7 @@ import { tree } from 'vued3tree';
 import ServiceBrances from '@/static/ServiceBranches';
 import LevelTraverseTree from '@/utils/LevelTraverseTree';
 const generateChildren = require('../utils/GenerateChildren').generateChildren;
+const levelOrderVisibleNodes = require('../utils/LevelOrderVisibleNodes').getLevelOrderTraverseOfVisibleNodes;
 
 export default {
   components: {
@@ -67,8 +69,20 @@ export default {
     },
     onClickedNode(){
       console.log('UPDATE VISIBLE NODES FROM onClickedNode');
+      this.setVisibleNodesArray();
+    },
+    setVisibleNodesArray(){
+      // wait for animation to finish
+      window.requestAnimationFrame(() => {
+        this.visibleNodesArray = levelOrderVisibleNodes(this.$refs);
+        console.log(this.visibleNodesArray);
+      });
     }
   },
+  mounted(){
+    this.$root.$on("setVisibleNodesArray", this.setVisibleNodesArray);
+    this.setVisibleNodesArray();
+  }
 }
 </script>
 

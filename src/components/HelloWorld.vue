@@ -6,6 +6,7 @@
       layoutType="horizontal"
       class="tidytree"
       id="my-custom-tree"
+      @clickedNode="onClickedNode"
     >
     </tree>
     <component :is="'style'" type="text/css">
@@ -32,6 +33,7 @@ export default {
         name: ServiceBrances[Math.floor(Math.random()*ServiceBrances.length)],
         children: generateChildren(),
       },
+      visibleNodesArray: [],
     };
   },
   computed: {
@@ -63,6 +65,9 @@ export default {
       }
       return grayCss;
     },
+    onClickedNode(){
+      console.log('UPDATE VISIBLE NODES FROM onClickedNode');
+    }
   },
 }
 </script>

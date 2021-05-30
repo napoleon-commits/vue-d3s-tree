@@ -19,7 +19,6 @@
 <script>
 import { tree } from 'vued3tree';
 import ServiceBrances from '@/static/ServiceBranches';
-import LevelTraverseTree from '@/utils/LevelTraverseTree';
 const generateChildren = require('../utils/GenerateChildren').generateChildren;
 const levelOrderVisibleNodes = require('../utils/LevelOrderVisibleNodes').getLevelOrderTraverseOfVisibleNodes;
 

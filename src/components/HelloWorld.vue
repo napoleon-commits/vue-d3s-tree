@@ -35,12 +35,12 @@ export default {
     };
   },
   computed: {
+    // ${this.getGrayedOutCss()}
     cssStyle() {
       return `
         .linktree {
           stroke: red !important;
         }
-        ${this.getGrayedOutCss()}
       `;
     }
   },

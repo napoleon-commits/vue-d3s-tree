@@ -6,6 +6,9 @@
       layoutType="horizontal"
       class="tidytree"
       id="my-custom-tree"
+      ref="my-custom-tree"
+      @clickedNode="onClickedNode"
+      :duration="duration"
     >
     </tree>
     <component :is="'style'" type="text/css">
@@ -16,9 +19,9 @@
 
 <script>
 import { tree } from 'vued3tree';
-import ServiceBrances from '@/static/ServiceBranches';
-import LevelTraverseTree from '@/utils/LevelTraverseTree';
+import ServiceBranches from '@/static/ServiceBranches';
 const generateChildren = require('../utils/GenerateChildren').generateChildren;
+const levelOrderVisibleNodes = require('../utils/LevelOrderVisibleNodes').getLevelOrderTraverseOfVisibleNodes;
 
 export default {
   components: {
@@ -29,9 +32,11 @@ export default {
   data() {
     return {
       tree: {
-        name: ServiceBrances[Math.floor(Math.random()*ServiceBrances.length)],
+        name: ServiceBranches[Math.floor(Math.random()*ServiceBranches.length)],
         children: generateChildren(),
       },
+      duration: 10,
+      visibleNodesArray: [],
     };
   },
   computed: {
@@ -40,22 +45,16 @@ export default {
         .linktree {
           stroke: red !important;
         }
-        ${this.getGrayedOutCss()}
+        ${this.getGrayedOutCss}
       `;
-    }
-  },
-  methods: {
+    },
     getGrayedOutCss(){
-      let levelOrderTree = LevelTraverseTree(this.tree);
-      // remove the head of the tree
-      levelOrderTree.shift();
-      // reverse the tree
-      levelOrderTree = levelOrderTree.reverse();
       let grayCss = '';
-      for(let i = 0; i < levelOrderTree.length; i+=1){
-        if(this.$store.state.checkedServices.includes(levelOrderTree[i]) === false){
+      for(let i = (this.visibleNodesArray.length - 1); i > 0; i-=1){
+        const node = this.visibleNodesArray[i];
+        if(this.$store.state.checkedServices.includes(node.data.name) === false){
           grayCss += `
-            #my-custom-tree > svg > g > path:nth-child(${i+1}) {
+            #my-custom-tree > svg > g > path:nth-child(${(this.visibleNodesArray.length - i - 1)+1}) {
               stroke: grey !important;
             }
           `;
@@ -63,6 +62,23 @@ export default {
       }
       return grayCss;
     },
+  },
+  methods: {
+    onClickedNode(argumentObject){
+      if(argumentObject.element.depth > 0){
+        this.$refs['my-custom-tree'].collapseAll(this.$refs['my-custom-tree'].internaldata.root)
+      }
+      setTimeout((()=>{
+        this.$refs['my-custom-tree'].show(argumentObject.element);
+        this.setVisibleNodesArray();
+      }), this.duration*10);
+    },
+    setVisibleNodesArray(){
+      this.visibleNodesArray = levelOrderVisibleNodes(this.$refs);
+    },
+  },
+  mounted(){
+    this.setVisibleNodesArray();
   },
 }
 </script>

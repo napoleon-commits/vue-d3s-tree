@@ -9,6 +9,7 @@
       ref="my-custom-tree"
       @expand="onExpand"
       @retract="onRetract"
+      :duration="10"
     >
     </tree>
     <component :is="'style'" type="text/css">
@@ -42,15 +43,37 @@ export default {
   methods: {
     getGrayedOutCss(){
       let grayCss = '';
-      for(let i = this.visibleNodesArray.length - 1; i > 0; i-=1){
-        if(this.$store.state.checkedServices.includes(this.visibleNodesArray[i].data.name) === false){
-          grayCss += `
-            #my-custom-tree > svg > g > path:nth-child(${(this.visibleNodesArray.length - i - 1)+1}) {
-              stroke: grey !important;
-            }
-          `;
+      console.log(
+        document.getElementsByClassName('linktree')
+      )
+      const indexesOfGrayedLinks = [];
+      let textTagArray = document.getElementsByTagName('text');
+      for(let i = 1; i < textTagArray.length; i+=1)
+      {
+        const element = textTagArray[i];
+        if(this.$store.state.checkedServices.includes(element.innerHTML) === false){
+          console.log(element)
+          indexesOfGrayedLinks.push(i)
         }
       }
+      console.log(indexesOfGrayedLinks);
+      const numberOfPathElements = document.getElementsByClassName('linktree').length;
+      indexesOfGrayedLinks.forEach(index => {
+        grayCss += `
+          #my-custom-tree > svg > g > path:nth-child(${numberOfPathElements-index+1}) {
+            stroke: grey !important;
+          }
+        `;
+      });
+      // for(let i = this.visibleNodesArray.length - 1; i > 0; i-=1){
+      //   if(this.$store.state.checkedServices.includes(this.visibleNodesArray[i].data.name) === false){
+      //     grayCss += `
+      //       #my-custom-tree > svg > g > path:nth-child(${(this.visibleNodesArray.length - i - 1)+1}) {
+      //         stroke: grey !important;
+      //       }
+      //     `;
+      //   }
+      // }
       return grayCss;
     },
     onExpand(){
@@ -61,7 +84,6 @@ export default {
     },
     setVisibleNodesArray(){
       this.visibleNodesArray = levelOrderVisibleNodes(this.$refs);
-      console.log(this.visibleNodesArray);
     },
     setCssStyle(){
       this.cssStyle = `
@@ -73,10 +95,10 @@ export default {
     },
     updateUI(){
       // wait for animation to finish
-      window.requestAnimationFrame(() => {
+      setTimeout(() => {
         this.setVisibleNodesArray();
         this.setCssStyle();
-      });
+      }, 1000);
     }
   },
   mounted(){

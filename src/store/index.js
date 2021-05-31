@@ -8,6 +8,8 @@ export default new Vuex.Store({
   state: {
     recognizedServiceBranches,
     checkedServices: recognizedServiceBranches,
+    displayDepth: 2,
+    maxTreeDepth: null,
   },
   mutations: {
   },

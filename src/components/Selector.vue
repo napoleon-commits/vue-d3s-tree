@@ -17,33 +17,33 @@
 
 <script>
 export default {
-    name: 'Selector',
-    computed: {
-      recognizedServiceBranches(){
-        return this.$store.state.recognizedServiceBranches;
-      },
-      checkedServices: {
-        get: function(){
-          return this.$store.state.checkedServices;
-        },
-        set: function(){},
-      },
+  name: 'Selector',
+  computed: {
+    recognizedServiceBranches () {
+      return this.$store.state.recognizedServiceBranches
     },
-    methods: {
-      toggleServiceBranch(service){
-        const tempServiceBranchArray = [];
-        for(let i = 0; i < this.checkedServices.length; i+=1){
-          tempServiceBranchArray.push(this.checkedServices[i]);
-        }
-        const index = tempServiceBranchArray.indexOf(service);
-        if(index > -1){
-          tempServiceBranchArray.splice(index, 1);
-        } else {
-          tempServiceBranchArray.push(service);
-        }
-        this.$store.state.checkedServices = tempServiceBranchArray;
+    checkedServices: {
+      get: function () {
+        return this.$store.state.checkedServices
       },
-    },
+      set: function () {}
+    }
+  },
+  methods: {
+    toggleServiceBranch (service) {
+      const tempServiceBranchArray = []
+      for (let i = 0; i < this.checkedServices.length; i += 1) {
+        tempServiceBranchArray.push(this.checkedServices[i])
+      }
+      const index = tempServiceBranchArray.indexOf(service)
+      if (index > -1) {
+        tempServiceBranchArray.splice(index, 1)
+      } else {
+        tempServiceBranchArray.push(service)
+      }
+      this.$store.state.checkedServices = tempServiceBranchArray
+    }
+  }
 }
 </script>
 

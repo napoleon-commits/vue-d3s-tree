@@ -12,7 +12,10 @@ export default {
     name: 'DepthController',
     methods: {
         setDepth(){
-            this.$root.$emit("setDepth");
+            this.$root.$emit("setDepth", this.$store.state.displayDepth);
+            setTimeout(() => {
+                this.$root.$emit("setVisibleNodesArray");
+            }, this.$store.state.treeAnimationDuration*this.$store.state.timeOutMultiplier);
         },
         decreaseDepth(){
             if(this.$store.state.displayDepth > 2){

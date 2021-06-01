@@ -10,6 +10,8 @@ export default new Vuex.Store({
     checkedServices: recognizedServiceBranches,
     displayDepth: 2,
     maxTreeDepth: null,
+    treeAnimationDuration: 10,
+    timeOutMultiplier: 10,
   },
   mutations: {
   },

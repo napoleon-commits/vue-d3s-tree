@@ -8,7 +8,7 @@
       id="my-custom-tree"
       ref="my-custom-tree"
       @clickedNode="onClickedNode"
-      :duration="duration"
+      :duration="$store.state.treeAnimationDuration"
     >
     </tree>
     <component :is="'style'" type="text/css">
@@ -36,7 +36,6 @@ export default {
         name: ServiceBranches[Math.floor(Math.random()*ServiceBranches.length)],
         children: generateChildren(),
       },
-      duration: 10,
       visibleNodesArray: [],
     };
   },
@@ -66,30 +65,51 @@ export default {
   },
   methods: {
     onClickedNode(argumentObject){
-      if(argumentObject.element.depth > 0){
-        this.$refs['my-custom-tree'].collapseAll(this.$refs['my-custom-tree'].internaldata.root)
+      if(argumentObject.element.depth === 0){
+        this.handleClickedRoot();
       }
-      setTimeout((()=>{
-        this.$refs['my-custom-tree'].show(argumentObject.element);
-        this.setVisibleNodesArray();
-      }), this.duration*10);
+      else{
+        this.handleClickedNonRoot(argumentObject);
+      }
     },
     setVisibleNodesArray(){
       this.visibleNodesArray = levelOrderVisibleNodes(this.$refs);
     },
-    setDepth(){
-      this.$refs['my-custom-tree'].expandAll(this.$refs['my-custom-tree'].internaldata.root)
-      const nodesToDisplay = getNodesAtDepth(this.$refs, this.$store.state.displayDepth - 1);
-      nodesToDisplay.forEach(node => {
-        this.$refs['my-custom-tree'].collapse(node);
+    setDepth(depth){
+      this.$refs['my-custom-tree'].collapseAll(this.$refs['my-custom-tree'].internaldata.root);
+      this.performTimeoutFunction(() => {
+        this.$refs['my-custom-tree'].expandAll(this.$refs['my-custom-tree'].internaldata.root);
+        const nodesToDisplay = getNodesAtDepth(this.$refs, depth - 1);
+        nodesToDisplay.forEach(node => {
+          this.$refs['my-custom-tree'].collapse(node);
+        });
+      })
+    },
+    performTimeoutFunction(fn){
+      setTimeout(fn, this.$store.state.treeAnimationDuration*this.$store.state.timeOutMultiplier)
+    },
+    handleClickedRoot(){
+      this.performTimeoutFunction(() => {
+        this.setDepth(2);
+        this.performTimeoutFunction(() => {
+          this.setVisibleNodesArray();
+        });
       });
-      this.setVisibleNodesArray();
-    }
+    },
+    handleClickedNonRoot(argumentObject){
+      this.$refs['my-custom-tree'].collapseAll(this.$refs['my-custom-tree'].internaldata.root)
+      this.performTimeoutFunction(() => {
+        this.$refs['my-custom-tree'].show(argumentObject.element);
+        this.setVisibleNodesArray();
+      });
+    },
   },
   mounted(){
     this.$root.$on("setDepth", this.setDepth);
-    this.setVisibleNodesArray();
+    this.$root.$on("setVisibleNodesArray", this.setVisibleNodesArray);
     this.$store.state.maxTreeDepth = this.$refs['my-custom-tree'].internaldata.root.height;
+    this.setDepth(this.$store.state.displayDepth);
+    this.setVisibleNodesArray();
   },
 }
 </script>

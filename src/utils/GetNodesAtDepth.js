@@ -11,29 +11,33 @@ const getNodesAtDepth = (vueReferences, depth) => {
 };
 
 const traverseQueue = (depth) => {
-    let doneParsing = false;
-    while(queue.length > 0 && doneParsing === false)
+    let doneTraversing = false;
+    while(queue.length > 0 && doneTraversing === false)
     {
         if(queue[0].depth > depth){
-            doneParsing = true;
+            doneTraversing = true;
         }
         else
         {
-            const lengthOfQueue = queue.length;
-            for(let i = 0; i < lengthOfQueue; i+=1)
-            {
-                const poppedNode = queue.shift();
-                if(poppedNode.depth === depth)
-                {
-                    nodesAtDepth.push(poppedNode);
-                }
-                if(poppedNode.children)
-                {
-                    poppedNode.children.forEach(node => {
-                        queue.push(node);
-                    })
-                }
-            }
+            traverseLevel(depth);
+        }
+    }
+};
+
+const traverseLevel = (depth) => {
+    const lengthOfQueue = queue.length;
+    for(let i = 0; i < lengthOfQueue; i+=1)
+    {
+        const poppedNode = queue.shift();
+        if(poppedNode.depth === depth)
+        {
+            nodesAtDepth.push(poppedNode);
+        }
+        if(poppedNode.children)
+        {
+            poppedNode.children.forEach(node => {
+                queue.push(node);
+            })
         }
     }
 };

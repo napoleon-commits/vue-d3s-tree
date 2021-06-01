@@ -22,6 +22,7 @@ import { tree } from 'vued3tree';
 import ServiceBranches from '@/static/ServiceBranches';
 const generateChildren = require('../utils/GenerateChildren').generateChildren;
 const levelOrderVisibleNodes = require('../utils/LevelOrderVisibleNodes').getLevelOrderTraverseOfVisibleNodes;
+const getNodesAtDepth = require('../utils/GetNodesAtDepth').getNodesAtDepth;
 
 export default {
   components: {
@@ -76,9 +77,18 @@ export default {
     setVisibleNodesArray(){
       this.visibleNodesArray = levelOrderVisibleNodes(this.$refs);
     },
+    setDepth(){
+      this.$refs['my-custom-tree'].expandAll(this.$refs['my-custom-tree'].internaldata.root)
+      const nodesToDisplay = getNodesAtDepth(this.$refs, this.$store.state.displayDepth - 1);
+      nodesToDisplay.forEach(node => {
+        this.$refs['my-custom-tree'].collapse(node);
+      });
+    }
   },
   mounted(){
+    this.$root.$on("setDepth", this.setDepth);
     this.setVisibleNodesArray();
+    this.$store.state.maxTreeDepth = this.$refs['my-custom-tree'].internaldata.root.height;
   },
 }
 </script>

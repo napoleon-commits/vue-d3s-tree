@@ -83,6 +83,7 @@ export default {
       nodesToDisplay.forEach(node => {
         this.$refs['my-custom-tree'].collapse(node);
       });
+      this.setVisibleNodesArray();
     }
   },
   mounted(){
